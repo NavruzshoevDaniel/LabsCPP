@@ -50,7 +50,7 @@ void Freq::outFreq() {
   partition();
   sortMapFreq();
   for (auto &obj: arr_words) {
-    fout << obj.second << " " << obj.first << " " << obj.first / (float) counter * 100 << endl;
+    fout << obj.second << ";" << obj.first << ";" << obj.first / (float) counter * 100 << endl;
   }
 
 }
