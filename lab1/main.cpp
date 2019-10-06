@@ -8,8 +8,9 @@ using namespace BitManipulation;
 int main() {
   Tritset a(5);
 
-  int co=a.length();
+
   a[4] = True;
+  a[4]=a[2];
   cout <<a[4]<<endl;
   a[2] = False;
   a[1] = True;
