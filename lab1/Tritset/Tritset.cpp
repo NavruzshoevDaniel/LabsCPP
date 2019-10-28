@@ -16,12 +16,19 @@ Tritset::Tritset(int n) {
   memset(memory, 0, sizeArr * sizeof(unsigned));
 }
 
-Tritset::Tritset(Tritset const &obj) {
+Tritset::Tritset(const Tritset &obj) {
   sizeArr = obj.sizeArr;
   sizeTrits = obj.sizeTrits;
   memory = new unsigned[sizeArr];
   memset(memory, 0, sizeArr * sizeof(unsigned));
   memcpy(memory, obj.memory, obj.sizeArr * sizeof(unsigned));
+}
+
+Tritset::Tritset(Tritset  &&obj){
+  sizeArr = obj.sizeArr;
+  sizeTrits = obj.sizeTrits;
+  memory = obj.memory;
+  obj.memory= nullptr;
 }
 
 Tritset::~Tritset() {
@@ -56,8 +63,8 @@ void Tritset::shrink() {
   while ((memory[newSize - 1] == 0) && (newSize > 1)) {
     newSize--;
   }
-  int i = 16;
-  sizeTrits = newSize * 16 +1;
+  int i = 15;
+  sizeTrits = newSize * 16;
   while (i > 1) {
     if (BitManipulation::getITrit(&memory[newSize - 1], i) == Unknown)
       sizeTrits--;
@@ -75,53 +82,76 @@ void Tritset::shrink() {
   }
 
 }
+
+Tritset &Tritset::operator=(const Tritset &obj){
+  delete[] memory;
+  sizeArr = obj.sizeArr;
+  sizeTrits = obj.sizeTrits;
+  memory = new unsigned[sizeArr];
+  //memset(memory, 0, sizeArr * sizeof(unsigned));
+  memcpy(memory, obj.memory, obj.sizeArr * sizeof(unsigned));
+  return *this;
+}
+
+Tritset &Tritset::operator=(Tritset &&obj) {
+  delete [] memory;
+  sizeArr = obj.sizeArr;
+  sizeTrits = obj.sizeTrits;
+  memory = obj.memory;
+  obj.memory= nullptr;
+  return *this;
+}
+
 //TritsetOperations
-Tritset &Tritset::operator~() {
-  Tritset *newTritset = new Tritset(sizeTrits);
+Tritset Tritset::operator~() {
+  Tritset newTritset(sizeTrits);
 
   trit trt = Unknown;
   for (int i = 0; i < sizeTrits; ++i) {
     trt = BitManipulation::getITrit(&this->memory[i / (sizeof(unsigned) * 4)], i % (sizeof(unsigned) * 4));
-    (*newTritset)[i] = BitManipulation::notOperation(trt);
+    newTritset[i] = BitManipulation::notOperation(trt);
   }
 
-  return *newTritset;
+  return newTritset;
 }
 
-Tritset &Tritset::operator&(const Tritset &trtSet) {
+Tritset Tritset::operator&(const Tritset &trtSet) {
   int newSizeTrits = 0;
-  Tritset *newTritset = new Tritset(newSizeTrits);
+  Tritset newTritset(newSizeTrits);
 
-  this->sizeTrits >= trtSet.sizeTrits ? newTritset->sizeTrits = sizeTrits : newTritset->sizeTrits = trtSet.sizeTrits;
+  this->sizeTrits >= trtSet.sizeTrits ? newTritset.sizeTrits = sizeTrits : newTritset.sizeTrits = trtSet.sizeTrits;
+  this->sizeArr >= trtSet.sizeArr ? newTritset.sizeArr = sizeArr : newTritset.sizeArr = trtSet.sizeArr;
 
-  newSizeTrits = newTritset->sizeTrits;
+
+  newSizeTrits = newTritset.sizeTrits;
   trit trt1 = Unknown;
   trit trt2 = Unknown;
 
   for (int i = 0; i < newSizeTrits; ++i) {
     trt1 = (*this)[i];
     trt2 = (trtSet)[i];
-    (*newTritset)[i] = BitManipulation::andOperation(trt1, trt2);
+    newTritset[i] = BitManipulation::andOperation(trt1, trt2);
   }
-  return *newTritset;
+  return newTritset;
 }
 
-Tritset &Tritset::operator|(const Tritset &trtSet) {
+Tritset Tritset::operator|(const Tritset &trtSet) {
   int newSizeTrits = 0;
-  Tritset *newTritset = new Tritset(newSizeTrits);
+  Tritset newTritset(newSizeTrits);
 
-  this->sizeTrits >= trtSet.sizeTrits ? newTritset->sizeTrits = sizeTrits : newTritset->sizeTrits = trtSet.sizeTrits;
+  this->sizeTrits >= trtSet.sizeTrits ? newTritset.sizeTrits = sizeTrits : newTritset.sizeTrits = trtSet.sizeTrits;
+  this->sizeArr >= trtSet.sizeArr ? newTritset.sizeArr = sizeArr : newTritset.sizeArr = trtSet.sizeArr;
 
-  newSizeTrits = newTritset->sizeTrits;
+  newSizeTrits = newTritset.sizeTrits;
   trit trt1 = Unknown;
   trit trt2 = Unknown;
 
   for (int i = 0; i < newSizeTrits; ++i) {
     trt1 = (*this)[i];
     trt2 = (trtSet)[i];
-    (*newTritset)[i] = BitManipulation::orOperation(trt1, trt2);
+    newTritset[i] = BitManipulation::orOperation(trt1, trt2);
   }
-  return *newTritset;
+  return newTritset;
 }
 
 ostream &operator<<(std::ostream &out, Tritset &trtSet) {
@@ -154,8 +184,6 @@ void Tritset::trim(int lastIndex) {
 }
 
 int Tritset::length() {
-  if((sizeArr==1) && (memory[0]==0))
-    return 0;
   return sizeTrits;
 }
 
@@ -229,9 +257,7 @@ trit Tritset::Reference::operator|(const trit trt2) {
 }
 
 Tritset::Reference &Tritset::Reference::operator=(Tritset::Reference &ref) {
-
   return *this;
 }
-
 
 }

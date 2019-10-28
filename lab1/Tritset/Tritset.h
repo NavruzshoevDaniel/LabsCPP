@@ -18,13 +18,17 @@ class Tritset {
  public:
 
   Tritset(int n);
-  Tritset(Tritset const  &obj);
+  Tritset(const Tritset  &obj);
+  Tritset(Tritset  &&obj);
   ~Tritset();
   void shrink();
 
-  Tritset &operator~();
-  Tritset &operator&(const Tritset &trtSet);
-  Tritset &operator|(const Tritset &trtSet);
+  Tritset operator~();
+  Tritset operator&(const Tritset &trtSet);
+  Tritset operator|(const Tritset &trtSet);
+
+  Tritset &operator=(const Tritset &trtSet);
+  Tritset &operator=(Tritset &&trtSet);
 
 
   int cardinality(trit value);
