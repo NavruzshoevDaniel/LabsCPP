@@ -15,5 +15,10 @@ std::string ReadFile::execute(std::string &text) {
 }
 
 ReadFile::ReadFile(const std::vector<std::string> &params) {
+  if(params.size()!=1) throw std::string("Wrong Input params");
   this->nameFile = params[0];
+}
+
+WorkerType ReadFile::getType() {
+  return WorkerType::IN;
 }

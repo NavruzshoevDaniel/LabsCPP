@@ -12,6 +12,7 @@ class ReadFile : public Worker {
   std::string nameFile;
  public:
   ReadFile(const std::vector<std::string> &params);
+  WorkerType getType() override;
   std::string execute(std::string &text) override;
 };
 

@@ -17,3 +17,11 @@ std::string Sort::execute(std::string &text) {
 
   return res;
 }
+
+Sort::Sort(const std::vector<std::string> &params) {
+  if(params.size()!=0) throw std::string("Wrong Input params");
+}
+
+WorkerType Sort::getType() {
+  return WorkerType::IN;
+}

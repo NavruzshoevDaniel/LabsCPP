@@ -12,6 +12,7 @@ class Replace : public Worker {
   std::string word2;
  public:
   Replace(const std::vector<std::string> &params);
+  WorkerType getType() override;
   std::string execute(std::string &text) override;
 };
 

@@ -13,7 +13,6 @@ bool Parser::is_number(const string &s) {
 void Parser::parse(string &path) {
   ifstream fin;
   fin.open(path);
-  this->path = path;
   string buf, id, block;
 
   int checkId[255] = {0};
@@ -30,7 +29,7 @@ void Parser::parse(string &path) {
       istream_iterator<string> end;
       vector<string> words(begin, end);
       //if (!checkInput(checkId, words)) throw string("Wrong input");
-      if(words[1]!="=") throw string("Wrong input");
+      if (words[1] != "=") throw string("Wrong input");
 
       id = words[0];
       if ((!is_number(id)) || (checkId[atoi(id.c_str())] >= 1)) throw string("Wrong input");

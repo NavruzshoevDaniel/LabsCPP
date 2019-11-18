@@ -17,5 +17,10 @@ std::string Grep::execute(std::string &text) {
 }
 
 Grep::Grep(const std::vector<std::string> &params) {
+  if(params.size()!=1) throw std::string("Wrong Input params");
   this->word = params[0];
+}
+
+WorkerType Grep::getType() {
+  return WorkerType::INOUT;
 }

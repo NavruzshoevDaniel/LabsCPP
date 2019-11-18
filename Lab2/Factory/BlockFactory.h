@@ -18,7 +18,7 @@ class BlockFactory {
 
   void add(const std::string &id, ICreator *creator);
 
-  Worker *create(const std::string &id, const std::vector<std::string> &params);
+  std::shared_ptr<Worker> create(const std::string &id, const std::vector<std::string> &params);
 
   static BlockFactory &Instance();// - SINGLETON
 };

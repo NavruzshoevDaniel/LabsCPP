@@ -13,6 +13,10 @@ std::string Replace::execute(std::string &text) {
   return text;
 }
 Replace::Replace(const std::vector<std::string> &params) {
+  if(params.size()!=2) throw std::string("Wrong Input params");
   this->word1=params[0];
   this->word2=params[1];
+}
+WorkerType Replace::getType() {
+  return WorkerType::INOUT;
 }

@@ -9,7 +9,8 @@
 class Sort : public Worker {
  public:
   Sort() {}
-  Sort(const std::vector<std::string> &params) {}
+  Sort(const std::vector<std::string> &params);
+  WorkerType getType() override;
   std::string execute(std::string &text) override;
 };
 

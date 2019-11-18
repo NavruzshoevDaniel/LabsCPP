@@ -9,6 +9,6 @@
 
 class ICreator {
  public:
-  virtual Worker *create(const std::vector<std::string> &params) const = 0;
+  virtual std::shared_ptr<Worker> create(const std::vector<std::string> &params) const = 0;
 };
 #endif //LAB2_ABSTRACTWORKERCREATOR_H

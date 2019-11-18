@@ -10,13 +10,8 @@
 #include "Parser.h"
 #include "Factory/BlockFactory.h"
 class WorkFlow {
- private:
-  bool checkOder (vector<string> &oder,WorkFTable &table);
-  bool checkBlock (string block, vector<string> &param);
-  bool checkTable(WorkFTable &workFTable,vector<string> &oder);
  public:
   void launch(std::string path);
-
 };
 
 #endif //LAB2_WORKFLOW_H

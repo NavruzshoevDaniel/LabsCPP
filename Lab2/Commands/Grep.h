@@ -11,6 +11,7 @@ class Grep : public Worker {
   std::string word;
  public:
   Grep(const std::vector<std::string> &params);
+  WorkerType getType() override;
   std::string execute(std::string &text) override;
 
 };

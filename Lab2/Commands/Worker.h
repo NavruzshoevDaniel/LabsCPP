@@ -7,8 +7,16 @@
 #include <string>
 #include <vector>
 
+enum class WorkerType {
+    IN,
+    OUT,
+    INOUT
+};
+
 class Worker {
  public:
+  virtual ~Worker() = default;
+  virtual WorkerType getType() = 0;
   virtual std::string execute(std::string &text) = 0;
 };
 

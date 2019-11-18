@@ -13,10 +13,9 @@
 #include <sstream>
 
 using namespace std;
-typedef  map<string, pair<string, vector<string>>> WorkFTable;
+typedef map<string, pair<string, vector<string>>> WorkFTable;
 class Parser {
  private:
-  string path;
   WorkFTable table;
   vector<string> order;
 

@@ -11,6 +11,7 @@ class Dump : public Worker {
   std::string outputFile;
  public:
   Dump(const std::vector<std::string> &params);
+  WorkerType getType() override;
   std::string execute(std::string &text) override;
 };
 

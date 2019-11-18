@@ -16,8 +16,8 @@ class Creator : public ICreator {
     BlockFactory::Instance().add(id, this);
   }
 
-  Worker *create(const std::vector<std::string> &params) const {
-    return new C(params);
+  std::shared_ptr<Worker> create(const std::vector<std::string> &params) const {
+    return std::shared_ptr<Worker>{new C(params)};
   }
 
 };

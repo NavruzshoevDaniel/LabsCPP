@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "WorkFlow.h"
+#include <list>
 
 void WorkFlow::launch(std::string path) {
 
@@ -17,41 +18,28 @@ void WorkFlow::launch(std::string path) {
 
   WorkFTable table = parser.getTable();
   std::vector<string> oder = parser.getOrder();
-  if (!checkTable(table,oder)) throw string("Wrong input");
-  BlockFactory factory;
-  std::string text = table[oder[0]].second[0];
 
-    for (auto &elem: oder) {
-      Worker *block = (BlockFactory::Instance().create(table[elem].first, table[elem].second));
-      text = block->execute(text);
-    }
+  std::list<shared_ptr<Worker>> lstExecut;
+
+  for (auto &elem: oder) {
+    shared_ptr<Worker> block = (BlockFactory::Instance().create(table[elem].first, table[elem].second));
+    lstExecut.push_back(block);
+  }
+
+  std::string text = "";
+  unsigned int countOperation = 0;
+  for (auto &elem: lstExecut) {
+    if ((countOperation == 0) && elem->getType() == WorkerType::IN) {
+      text = table[oder[0]].second[0];
+      text = elem->execute(text);
+    } else if ((countOperation == (lstExecut.size() - 1)) && elem->getType() == WorkerType::OUT)
+      text = elem->execute(text);
+    else if (elem->getType() == WorkerType::INOUT)
+      text = elem->execute(text);
+    else throw string("Wrong oder");
+
+    countOperation++;
+  }
 
 }
 
-bool WorkFlow::checkTable(WorkFTable &workFTable, vector<string> &oder) {
-
-  for (auto &elem: workFTable)
-    if (!checkBlock(elem.second.first, elem.second.second)) return false;
-
-  if (!checkOder(oder, workFTable)) return false;
-
-  return true;
-}
-
-bool WorkFlow::checkBlock(string block, vector<string> &param) {
-
-  int paramCount = param.size();
-  if (((block == "readfile" || block == "writefile" || block == "grep" || block == "dump") && paramCount == 1)
-      || ((block == "replace") && paramCount == 2)
-      || ((block == "sort") && paramCount == 0))
-    return true;
-  else return false;
-}
-
-bool WorkFlow::checkOder(vector<string> &oder, WorkFTable &table) {
-  string firstBlock = oder[0];
-  string lastBlock = oder[oder.size() - 1];
-  if ((table[firstBlock].first == "readfile") && (table[lastBlock].first == "writefile"))
-    return true;
-  return false;
-}

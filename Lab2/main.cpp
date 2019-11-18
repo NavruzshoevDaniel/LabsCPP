@@ -2,9 +2,9 @@
 
 #include "WorkFlow.h"
 
-int main(int arg,char **argv) {
+int main(int arg, char **argv) {
   WorkFlow workFlow;
-  ifstream file;
+
   try {
     workFlow.launch("in.txt");
   }
