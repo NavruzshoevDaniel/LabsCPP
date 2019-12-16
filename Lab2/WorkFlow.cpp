@@ -28,13 +28,15 @@ void WorkFlow::launch(std::string path) {
 
   std::string text = "";
   unsigned int countOperation = 0;
+
   for (auto &elem: lstExecut) {
-    if ((countOperation == 0) && elem->getType() == WorkerType::IN) {
+    if ((countOperation == 0) && (elem->getType() == WorkerType::IN)) {
       text = table[oder[0]].second[0];
       text = elem->execute(text);
     } else if ((countOperation == (lstExecut.size() - 1)) && elem->getType() == WorkerType::OUT)
       text = elem->execute(text);
-    else if (elem->getType() == WorkerType::INOUT)
+    else if ((countOperation != 0) && (countOperation != (lstExecut.size() - 1)) &&
+        (elem->getType() == WorkerType::INOUT))
       text = elem->execute(text);
     else throw string("Wrong oder");
 

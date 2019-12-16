@@ -23,5 +23,5 @@ Sort::Sort(const std::vector<std::string> &params) {
 }
 
 WorkerType Sort::getType() {
-  return WorkerType::IN;
+  return WorkerType::INOUT;
 }
