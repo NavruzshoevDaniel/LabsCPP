@@ -179,7 +179,7 @@ void Game::clearBeforeTheNextGame() {
 
 }
 void Game::setRounds(int rounds) {
-  this->rounds=rounds
+  this->rounds=rounds;
 
 }
 
