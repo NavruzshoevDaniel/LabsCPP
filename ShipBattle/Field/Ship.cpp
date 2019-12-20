@@ -6,11 +6,11 @@
 Ship::Ship(std::pair<int, int> xy, std::string orient, int length) {
 
   if (orient == "v") {
-    this->orient = vertical;
+    this->orient = down;
     for (int i = 0; i < length; ++i)
       xyCoordinates.push_back(std::make_pair(xy.first + i, xy.second));
   } else if (orient == "h") {
-    this->orient = horisantal;
+    this->orient = right;
     for (int i = 0; i < length; ++i)
       xyCoordinates.push_back(std::make_pair(xy.first, xy.second + i));
   }
@@ -43,13 +43,13 @@ Ship::Ship(std::pair<int, int> xy, orientation orient, int length) {
   for (int i = 0; i < length; ++i) {
 
     switch (orient) {
-      case vertical: {
-        this->orient = vertical;
+      case down: {
+        this->orient = down;
         xyCoordinates.push_back(std::make_pair(xy.first + i, xy.second));
         break;
       }
-      case horisantal: {
-        this->orient = horisantal;
+      case right: {
+        this->orient = right;
 
         xyCoordinates.push_back(std::make_pair(xy.first, xy.second + i));
         break;

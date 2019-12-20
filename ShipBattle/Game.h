@@ -4,24 +4,21 @@
 
 #ifndef SHIPBATTLE_GAME_H
 #define SHIPBATTLE_GAME_H
-#include "IGamer.h"
-#include <unistd.h>
-
-enum typeGamer{
-  consoleGamer,
-  randomGamer,
-  optimalGamer
-};
+#include "Gamers/IGamer.h"
+#include "Gamers/RandomGamer.h"
+#include "Gamers/ConsoleGamer.h"
+#include "Gamers/OptimalGamer.h"
+#include "Factory/GamerFactory.h"
 
 class Game {
- protected:
+ private:
   typedef std::vector<Ship> PlayersShips;
   PlayersShips playerShips1;
   PlayersShips playerShips2;
   Map playerMap1;
   Map playerMap2;
-
-
+  std::string typePlayer1="random";
+  std::string typePlayer2="random";
   int countWinPlayer1=0;
   int countWinPlayer2=0;
   int rounds = 1;
@@ -42,7 +39,11 @@ class Game {
  public:
 
   void play();
+
   void setRounds(int rounds);
+  void setTypePlayer1(char *typePlayer);
+  void setTypePlayer2(char *typePlayer);
+
   ~Game()= default;
 
 };

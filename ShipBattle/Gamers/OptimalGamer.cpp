@@ -1,126 +1,23 @@
 //
-// Created by Daniel on 05/12/2019.
+// Created by Daniel on 21/12/2019.
 //
 
-#include "IGamer.h"
+#include "OptimalGamer.h"
 
-std::vector<Ship> ConsoleGamer::putShips(Map &playerMap, OutType outType) {
-  ConsoleOperations console;
-  std::pair<int, int> xyCoord;
-  Map map;
-  std::string orientation;
-  bool checkInMap = false;
-  std::vector<Ship> newPlayerShips;
-
-  for (int i = 4; i > 3; --i) {
-    for (int j = 0; j <= 4 - i; ++j) {
-      system("clear");
-
-      if (outType == OutType::showFirstMap)
-        console.viewBoard(playerMap, map, outType);
-      else
-        console.viewBoard(map, playerMap, outType);
-
-      while (!checkInMap) {
-        xyCoord = console.readingCoordinates(i);
-
-        if (i != 1)
-          orientation = console.readingOrientation(i);
-
-        Ship ship(xyCoord, orientation, i);
-
-        checkInMap = playerMap.putShip(ship);
-
-        if (!checkInMap)
-          std::cout << "ERROR:Неправильно поставили корабль(минимальное расстояние между кораблями - 1,"
-                       "корабли не должны выходить за границы поля)" << std::endl;
-        else
-          newPlayerShips.push_back(ship);
-      }
-      checkInMap = false;
-
-    }
-  }
-  return newPlayerShips;
-}
-
-std::pair<int, int> ConsoleGamer::getCoordToAttack(Map &enemyMap) {
-
-  ConsoleOperations consoleOperations;
-  return consoleOperations.readingCoordinatesToAttack();
-}
-
-std::vector<Ship> RandomGamer::putShips(Map &playerMap, OutType outType) {
-  std::pair<int, int> xyCoord;
-  std::vector<Ship> newPlayerShips;
-  orientation orient = vertical;
-  bool checkInMap = false;
-
-  for (int i = 4; i > 0; --i) {
-    for (int j = 0; j <= 4 - i; ++j) {
-      while (!checkInMap) {
-
-        xyCoord = randomCoord();
-        if (i != 1)
-          orient = randomOrientation();
-
-        Ship ship(xyCoord, orient, i);
-
-        checkInMap = playerMap.putShip(ship);
-
-        if (checkInMap)
-          newPlayerShips.push_back(ship);
-      }
-      checkInMap = false;
-    }
-  }
-  return newPlayerShips;
-}
-
-orientation RandomGamer::randomOrientation() {
-  std::random_device rd;
-  std::default_random_engine generator(rd());
-  std::uniform_int_distribution<int> distribution(0, 1);
-
-  int orientation = distribution(generator);
-
-  return orientation ? vertical : horisantal;
-}
-
-std::pair<int, int> RandomGamer::randomCoord() {
-  std::random_device rd;
-  std::default_random_engine generator(rd());
-  std::uniform_int_distribution<int> distribution(0, 9);
-  int x = distribution(generator);
-  int y = distribution(generator);
-
-  return std::make_pair(x, y);
-}
-
-std::pair<int, int> RandomGamer::getCoordToAttack(Map &enemyMap) {
-  return randomCoord();
-}
-
-bool RandomGamer::isCommunicate() {
-  return false;
-}
-
-bool ConsoleGamer::isCommunicate() {
-  return true;
-}
+static GamerMaker<OptimalGamer> optimalG("optimal");
 
 std::vector<Ship> OptimalGamer::putShips(Map &playerMap, OutType outType) {
 
   std::vector<Ship> newPlayerShips;
 
-  int countShips[4];
+  int countShips[TOTAL_SHIPS];
 
   std::random_device rd;
   std::default_random_engine generator(rd());
-  std::uniform_int_distribution<int> distribution(2, 4);
+  std::uniform_int_distribution<int> distribution(2, TOTAL_SHIPS);
 
-  for (int i = 0; i < 4; ++i)
-    countShips[i] = 4 - i;
+  for (int i = 0; i < TOTAL_SHIPS; ++i)
+    countShips[i] = TOTAL_SHIPS - i;
   countShips[0] = 0;
 
   while (!isFull(countShips)) {
@@ -189,7 +86,7 @@ unsigned long OptimalGamer::commonCoord(Map &playerMap, Ship &ship) {
 
 bool OptimalGamer::isFull(int *countShips) {
 
-  for (int i = 0; i < 4; ++i)
+  for (int i = 0; i < TOTAL_SHIPS; ++i)
     if (countShips[i] != 0)
       return false;
 
@@ -200,7 +97,7 @@ void OptimalGamer::updateActivePoints(Map &map, Ship &tmpShip) {
   auto start = std::find(activePoints.begin(), activePoints.end(), tmpShip.getCoordinates()[0]);
   activePoints.erase(start);
 
-  if (tmpShip.getOrientation() == orientation::horisantal || tmpShip.getOrientation() == orientation::left) {
+  if (tmpShip.getOrientation() == orientation::right || tmpShip.getOrientation() == orientation::left) {
     addActivePoint(map, std::make_pair(tmpShip.getStart().first, tmpShip.getStart().first + 2));
     addActivePoint(map, std::make_pair(tmpShip.getStart().first, tmpShip.getStart().first - 2));
     addActivePoint(map, std::make_pair(tmpShip.getEnd().first + 2, tmpShip.getEnd().first));
@@ -331,8 +228,8 @@ void OptimalGamer::fillAllegedPart(Map &map) {
   if (currentShip.size() < 2) {
 
     for (float i = 0; i <= M_PI * 2; i += 1.58) {
-      x = static_cast<int>(round(cos(i) * 1) + planned.first);
-      y = static_cast<int>(round(sin(i) * 1) + planned.second);
+      x = static_cast<int>(round(cos(i)) + planned.first);
+      y = static_cast<int>(round(sin(i)) + planned.second);
 
       addAllegedCoord(map, x, y);
     }
@@ -342,7 +239,7 @@ void OptimalGamer::fillAllegedPart(Map &map) {
     x = currentShip.back().first;
     y = currentShip.back().second;
 
-    if (curOrientation == horisantal) {
+    if (curOrientation == right) {
       for (auto iter = allegedPart.begin(); iter != allegedPart.end();)
         if (iter->first != currentShip[0].first)
           iter = allegedPart.erase(iter);
@@ -365,7 +262,7 @@ void OptimalGamer::fillAllegedPart(Map &map) {
 }
 
 void OptimalGamer::whichOrientation() {
-  curOrientation = currentShip[0].first == currentShip[1].first ? horisantal : vertical;
+  curOrientation = currentShip[0].first == currentShip[1].first ? right : down;
 }
 
 void OptimalGamer::addAllegedCoord(Map &map, int x, int y) {
@@ -374,7 +271,3 @@ void OptimalGamer::addAllegedCoord(Map &map, int x, int y) {
   if (map.isInMap(coord) && !map.isKilledShip(coord))
     allegedPart.emplace_back(coord);
 }
-
-
-
-

@@ -44,8 +44,8 @@ void Map::fillAroundArea(Ship &ship, std::pair<int, int> coord) {
   int y = 0;
 
   for (float i = 0; i <= M_PI * 2; i += 0.786) {
-    x = static_cast<int>(round(cos(i) * 1) + coord.first);
-    y = static_cast<int>(round(sin(i) * 1) + coord.second);
+    x = static_cast<int>(round(cos(i)) + coord.first);
+    y = static_cast<int>(round(sin(i)) + coord.second);
 
     if (isInMap(std::make_pair(x, y)) && (isFree(std::make_pair(x, y)) || (map[x][y].getStatus() == notToAdd))) {
       map[x][y].setStatus(notToAdd);

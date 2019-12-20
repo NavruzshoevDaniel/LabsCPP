@@ -9,10 +9,10 @@ void Game::play() {
   int countRounds = 0;
 
   while (rounds != countRounds) {
-    IGamer *gamer1 = new RandomGamer();
-    IGamer *gamer2 = new OptimalGamer();
+    IGamer *gamer1 = GamerFactory::Instance().createGamer(typePlayer1);
+    IGamer *gamer2 = GamerFactory::Instance().createGamer(typePlayer2);
 
-    playersPutShips(gamer1,gamer2);
+    playersPutShips(gamer1, gamer2);
 
     while (!winner) {
 
@@ -46,7 +46,7 @@ void Game::play() {
   showStatistics();
 }
 
-void Game::playersPutShips(IGamer *gamer1,IGamer *gamer2) {
+void Game::playersPutShips(IGamer *gamer1, IGamer *gamer2) {
   playerShips1 = gamer1->putShips(playerMap1, OutType::showFirstMap);
   system("clear");
 
@@ -128,10 +128,10 @@ void Game::attacking(IGamer *gamer, PlayersShips &enemyShips, Map &enemyMap, Out
     coordToAttack = gamer->getCoordToAttack(enemyMap);
 
     if (!checkAttack(enemyMap, coordToAttack.first, coordToAttack.second)) {
-      if (gamer->isCommunicate()) {
-        system("clear");
+      system("clear");
+      if (gamer->isCommunicate())
         std::cout << "Ты уже шмалял по этой клетке,капитан!\nВыбери другие координаты!" << std::endl;
-      }
+
       continue;
     }
 
@@ -168,18 +168,26 @@ void Game::showStatistics() {
     }
     welcomeFile.close();
   }
-  std::cout << "-\t\t" << std::setw(10) << countWinPlayer1 << "\t\t\t\t   -\t\t" << std::setw(12) << countWinPlayer2
-            << "\t\t\t\t -";
+  std::cout << "-\t" << std::setw(10) << countWinPlayer1 << "\t\t   -\t\t" << std::setw(7) << countWinPlayer2
+            << "\t\t\t -" << std::endl;
+  std::cout << "--------------------------------------------------------------------------" << std::endl;
 }
+
 void Game::clearBeforeTheNextGame() {
   playerMap1.clearMap();
   playerMap2.clearMap();
   playerShips1.clear();
   playerShips2.clear();
-
 }
+
 void Game::setRounds(int rounds) {
-  this->rounds=rounds;
-
+  this->rounds = rounds;
 }
 
+void Game::setTypePlayer1(char *typePlayer) {
+  this->typePlayer1=typePlayer;
+}
+
+void Game::setTypePlayer2(char *typePlayer) {
+  this->typePlayer2=typePlayer;
+}

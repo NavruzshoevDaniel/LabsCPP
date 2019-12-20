@@ -9,11 +9,10 @@
 #include <vector>
 
 enum orientation {
-  vertical,
-  horisantal,
+  down,
+  right,
   left,
   up
-
 };
 
 class Ship {
