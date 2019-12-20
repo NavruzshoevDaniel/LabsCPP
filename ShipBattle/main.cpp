@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     switch (rez) {
       case 'h': {
         showHelp();
-        break;
+        return 0;
       }
       case 'c': {
         int rounds = std::stoi(optarg);
