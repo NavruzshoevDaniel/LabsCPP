@@ -9,7 +9,6 @@ static GamerMaker<OptimalGamer> optimalG("optimal");
 std::vector<Ship> OptimalGamer::putShips(Map &playerMap, OutType outType) {
 
   std::vector<Ship> newPlayerShips;
-
   int countShips[TOTAL_SHIPS];
 
   std::random_device rd;
@@ -47,6 +46,8 @@ std::vector<Ship> OptimalGamer::putShips(Map &playerMap, OutType outType) {
         }
       }
     }
+  if (availableShips.size()==0)
+    continue;
 
     std::uniform_int_distribution<int> distAvailableShips(0, (availableShips.size() - 1));
     int numberShipInVector = distAvailableShips(generator);
@@ -96,24 +97,20 @@ bool OptimalGamer::isFull(int *countShips) {
 void OptimalGamer::updateActivePoints(Map &map, Ship &tmpShip) {
   auto start = std::find(activePoints.begin(), activePoints.end(), tmpShip.getCoordinates()[0]);
   activePoints.erase(start);
+  int x=0;
+  int y=0;
 
-  if (tmpShip.getOrientation() == orientation::right || tmpShip.getOrientation() == orientation::left) {
-    addActivePoint(map, std::make_pair(tmpShip.getStart().first, tmpShip.getStart().first + 2));
-    addActivePoint(map, std::make_pair(tmpShip.getStart().first, tmpShip.getStart().first - 2));
-    addActivePoint(map, std::make_pair(tmpShip.getEnd().first + 2, tmpShip.getEnd().first));
-    addActivePoint(map, std::make_pair(tmpShip.getEnd().first - 2, tmpShip.getEnd().first));
+    for (float i = 0; i <= M_PI * 2; i += 1.57) {
+      x = static_cast<int>(round(cos(i)*2) + tmpShip.getStart().first);
+      y = static_cast<int>(round(sin(i)*2) + tmpShip.getStart().second);
 
-  } else {
-    addActivePoint(map, std::make_pair(tmpShip.getStart().first + 2, tmpShip.getStart().first));
-    addActivePoint(map, std::make_pair(tmpShip.getStart().first - 2, tmpShip.getStart().first));
-    addActivePoint(map, std::make_pair(tmpShip.getEnd().first, tmpShip.getEnd().first + 2));
-    addActivePoint(map, std::make_pair(tmpShip.getEnd().first, tmpShip.getEnd().first - 2));
-  }
+      addActivePoint(map, std::make_pair(x, y));
+    }
 
 }
 
 void OptimalGamer::addActivePoint(Map &playerMap, std::pair<int, int> coord) {
-  if (playerMap.isInMap(coord))
+  if (playerMap.isInMap(coord)&&playerMap.isFree(coord))
     activePoints.push_back(coord);
 }
 

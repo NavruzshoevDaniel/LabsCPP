@@ -43,7 +43,7 @@ void Map::fillAroundArea(Ship &ship, std::pair<int, int> coord) {
   int x = 0;
   int y = 0;
 
-  for (float i = 0; i <= M_PI * 2; i += 0.786) {
+  for (float i = 0; i <= M_PI * 2; i += 0.786) {//0.786=pi/4
     x = static_cast<int>(round(cos(i)) + coord.first);
     y = static_cast<int>(round(sin(i)) + coord.second);
 
@@ -71,6 +71,4 @@ void Map::clearMap() {
   for (int i = 0; i < SIZE_MAP; ++i)
     for (int j = 0; j < SIZE_MAP; ++j)
       map[i][j].setStatus(notShip);
-
-
 }
