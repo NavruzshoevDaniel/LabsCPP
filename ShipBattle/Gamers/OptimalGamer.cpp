@@ -46,8 +46,6 @@ std::vector<Ship> OptimalGamer::putShips(Map &playerMap, OutType outType) {
         }
       }
     }
-  if (availableShips.size()==0)
-    continue;
 
     std::uniform_int_distribution<int> distAvailableShips(0, (availableShips.size() - 1));
     int numberShipInVector = distAvailableShips(generator);
